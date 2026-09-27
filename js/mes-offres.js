@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
       culture: product ? product.culture : key,
       key,
       quantite: `${quantite} kg`,
-      prix: `${Number(prix).toLocaleString("fr-FR")} KHR/kg`,
+      prix: `${Number(prix).toLocaleString("fr-FR")} FCFA/kg`,
       province,
       canal: "site",
       statut: "Nouveau match",

@@ -10,7 +10,7 @@ let soundOn = true;
 let recognition = null;
 let micStream = null;
 
-let lang = null;      // "fr" | "en" | "km"
+let lang = null;      // "fr" | "en" | "wo"
 let stage = "idle";   // "lang" | "menu" | "price-pick" | "sell-culture" | "sell-qty" | "sell-price"
 let sellData = {};
 let keypadBuffer = "";
@@ -79,7 +79,7 @@ function resolveLang(raw) {
   const t = raw.trim().toLowerCase();
   if (t === "1" || t.includes("franc") || t.includes("french")) return "fr";
   if (t === "2" || t.includes("english") || t.includes("anglais")) return "en";
-  if (t === "3" || t.includes("khmer") || raw.includes("ខ្មែរ")) return "km";
+  if (t === "3" || t.includes("wolof") || t === "wo") return "wo";
   return null;
 }
 
@@ -90,8 +90,8 @@ function resolveProductFromText(raw, curLang) {
     if (AR_QUICK_KEYS[idx]) return AR_QUICK_KEYS[idx];
   }
   const lower = trimmed.toLowerCase();
-  if (curLang === "km") {
-    const entry = Object.entries(AR_NAMES.km).find(([, name]) => raw.includes(name));
+  if (curLang === "wo") {
+    const entry = Object.entries(AR_NAMES.wo).find(([, name]) => raw.includes(name));
     return entry ? entry[0] : null;
   }
   const kw = AR_KEYWORDS[curLang];
@@ -103,7 +103,7 @@ function resolveProductFromText(raw, curLang) {
 }
 
 function isSellIntent(raw, curLang) {
-  if (curLang === "km") return false; // le khmer s'utilise via le clavier pour cette démo
+  if (curLang === "wo") return false; // le wolof s'utilise via le clavier pour cette démo
   const lower = raw.trim().toLowerCase();
   return AR_KEYWORDS[curLang].sell.some((k) => lower.includes(k));
 }
@@ -165,7 +165,7 @@ async function startCall() {
   document.getElementById("call-active").style.display = "grid";
   document.getElementById("transcript").innerHTML = "";
   document.getElementById("lang-warning").style.display = "none";
-  document.getElementById("call-hint").textContent = "Exemples à essayer : « prix du riz », « je veux vendre ma récolte », ou une question sur votre culture.";
+  document.getElementById("call-hint").textContent = "Exemples à essayer : « prix de l'oignon », « je veux vendre ma récolte », ou une question sur votre culture.";
 
   lang = null;
   stage = "lang";
@@ -173,7 +173,7 @@ async function startCall() {
   keypadBuffer = "";
   updateKeypadScreen();
 
-  addBubble("system", AR_WELCOME_LANG, "FR · EN · KM");
+  addBubble("system", AR_WELCOME_LANG, "FR · EN · WO");
   speakSegments(AR_WELCOME_SEGMENTS);
 
   const micOk = await ensureMic();
@@ -209,13 +209,13 @@ function handleUserInput(raw) {
   if (stage === "lang") {
     const chosen = resolveLang(text);
     if (!chosen) {
-      systemSay(AR_WELCOME_LANG, "FR · EN · KM");
+      systemSay(AR_WELCOME_LANG, "FR · EN · WO");
       return;
     }
     lang = chosen;
     stage = "menu";
     if (recognition) recognition.lang = AR_I18N[lang].speechLang;
-    document.getElementById("lang-warning").style.display = lang === "km" ? "block" : "none";
+    document.getElementById("lang-warning").style.display = lang === "wo" ? "block" : "none";
     document.getElementById("call-hint").textContent = AR_I18N[lang].hint;
     systemSay(AR_I18N[lang].menu(), AR_I18N[lang].langTag);
     return;
@@ -228,7 +228,7 @@ function handleUserInput(raw) {
     if (text === "1") { stage = "price-pick"; systemSay(t.askPriceProduct(arQuickList(lang))); return; }
     if (text === "2") { stage = "sell-culture"; systemSay(t.askSellProduct(arQuickList(lang))); return; }
     if (text === "3") {
-      if (lang === "km") { systemSay(t.questionKmNotice); return; } // texte libre non disponible en khmer pour cette démo
+      if (lang === "wo") { systemSay(t.questionWoNotice); return; } // texte libre non disponible en wolof pour cette démo
       stage = "question";
       systemSay(t.askQuestion());
       return;
@@ -307,8 +307,8 @@ function handleUserInput(raw) {
       culture: AR_NAMES.fr[sellData.key],
       key: sellData.key,
       quantite: `${sellData.quantite} kg`,
-      prix: `${sellData.prix.toLocaleString("fr-FR")} KHR/kg`,
-      province: "Kampot",
+      prix: `${sellData.prix.toLocaleString("fr-FR")} FCFA/kg`,
+      province: (paramLoadUser().province) || "Thiès",
       canal: "vocal",
       statut: "Nouveau match",
       photo: null

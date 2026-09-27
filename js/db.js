@@ -12,74 +12,71 @@
    "deux canaux d'accès, une seule base de données".
    ========================================================= */
 
-// v5 : réduction du nombre d'offres "Contacté"/"Transaction convenue" dans
-// les données de démo (pour que "Suivi des commandes" reste à 20 offres
-// maximum, voir plus bas). Changer la clé force les navigateurs qui avaient
-// déjà des données en cache (avec l'ancienne répartition des statuts) à
-// recharger le jeu de données de départ à jour, sans attendre que la
-// personne clique sur "Réinitialiser les données de démonstration" dans
-// Paramètres.
-const AR_STORAGE_KEY = "allorecolte_prototype_db_v5";
+// v6 : version Sénégal — catalogue de cultures et régions adapté (voir
+// README.md), prix en FCFA. Changer la clé force les navigateurs qui
+// avaient encore l'ancienne démo (Cambodge, KHR) en cache à recharger le
+// jeu de données de départ à jour, sans attendre que la personne clique
+// sur "Réinitialiser les données de démonstration" dans Paramètres.
+const AR_STORAGE_KEY = "allorecolte_prototype_db_v6_senegal";
 
 // Chaque produit a un champ "photo" (vide par défaut) : dès qu'une image
 // y est ajoutée (chemin vers un fichier dans images/, ou URL), elle
 // s'affiche automatiquement à la place de l'emplacement en pointillés —
-// voir js/icons.js (arProductMedia) et README.md. Le produit "riz" a
-// maintenant une image de démonstration (images/riz.jpg, une illustration,
-// pas une vraie photo) pour servir d'exemple concret du fonctionnement :
-// pour vos propres produits, remplacez simplement "null" par le chemin
-// vers votre image (ajoutée dans le dossier images/) ou par son URL.
+// voir js/icons.js (arProductMedia) et README.md.
+//
+// Le catalogue ci-dessous a été retravaillé pour le Sénégal : les cultures
+// qui n'y sont pas cultivées (durian, rambutan, longane, jacque, cardamome,
+// haricot mungo, poivre noir/rouge, liseron d'eau, basilic thaï, pomelo,
+// haricot long...) ont été retirées, avec leur photo. Des cultures propres
+// au Sénégal qui n'existaient pas dans la version d'origine ont été
+// ajoutées (mil, sorgho, niébé, bissap, fonio, orange) : leur champ "photo"
+// est volontairement laissé à "null", à l'équipe d'y mettre une vraie
+// photo (voir section 3 du README). Les cultures conservées gardent leur
+// photo de démonstration d'origine.
 const AR_PRODUCTS = [
-  { key: "riz", culture: "Riz jasmin", nameEn: "Jasmine rice", prix: "1 250 KHR/kg", bg: "#F7ECDA", photo: "images/riz.jpg" },
-  { key: "mais", culture: "Maïs", nameEn: "Corn", prix: "800 KHR/kg", bg: "#FBF3D9", photo: "images/mais.jpg" },
-  { key: "manioc", culture: "Manioc", nameEn: "Cassava", prix: "620 KHR/kg", bg: "#F3E9DC", photo: "images/manioc.jpg" },
-  { key: "poivre-noir", culture: "Poivre noir", nameEn: "Black pepper", prix: "18 000 KHR/kg", bg: "#EDE7DE", photo: "images/poivrenoir.jpg" },
-  { key: "poivre-rouge", culture: "Poivre rouge", nameEn: "Red pepper", prix: "21 000 KHR/kg", bg: "#F7E3DD", photo: "images/poivrerouge.jpg" },
-  { key: "mangue", culture: "Mangue", nameEn: "Mango", prix: "2 500 KHR/kg", bg: "#FCEBD6", photo: "images/mangue.jpg" },
-  { key: "banane", culture: "Banane", nameEn: "Banana", prix: "1 800 KHR/kg", bg: "#FBF2CF", photo: "images/banane.jpg" },
-  { key: "cajou", culture: "Noix de cajou", nameEn: "Cashew nut", prix: "9 500 KHR/kg", bg: "#F2E7D3", photo: "images/noixdecajou.jpg" },
-  { key: "pasteque", culture: "Pastèque", nameEn: "Watermelon", prix: "1 100 KHR/kg", bg: "#EAF5E7", photo: "images/pasteque.jpg" },
-  { key: "concombre", culture: "Concombre", nameEn: "Cucumber", prix: "900 KHR/kg", bg: "#EAF3E4", photo: "images/concombre.jpg" },
-  { key: "aubergine", culture: "Aubergine", nameEn: "Eggplant", prix: "1 400 KHR/kg", bg: "#ECE3EE", photo: "images/aubergine.jpg" },
-  { key: "canne", culture: "Canne à sucre", nameEn: "Sugarcane", prix: "500 KHR/kg", bg: "#F1F0DE", photo: "images/canne.jpg" },
-  { key: "haricot-vert", culture: "Haricots verts", nameEn: "Green beans", prix: "1 600 KHR/kg", bg: "#EAF4E1", photo: "images/haricotvert.jpg" },
-  { key: "tomate", culture: "Tomate", nameEn: "Tomato", prix: "1 700 KHR/kg", bg: "#FBE6DE", photo: "images/tomate.jpg" },
-  { key: "oignon", culture: "Oignon", nameEn: "Onion", prix: "2 200 KHR/kg", bg: "#F5EBDD", photo: "images/oignon.jpg" },
-  { key: "ail", culture: "Ail", nameEn: "Garlic", prix: "7 500 KHR/kg", bg: "#F6EFE0", photo: "images/ail.jpg" },
-  { key: "patate-douce", culture: "Patate douce", nameEn: "Sweet potato", prix: "1 300 KHR/kg", bg: "#F5E2CE", photo: "images/patate.jpg" },
-  { key: "pomme-de-terre", culture: "Pomme de terre", nameEn: "Potato", prix: "1 900 KHR/kg", bg: "#F0E6D4", photo: "images/pommedeterre.jpg" },
-  { key: "courge", culture: "Courge", nameEn: "Pumpkin / squash", prix: "1 200 KHR/kg", bg: "#FBE9C7", photo: "images/courge.jpg" },
-  { key: "haricot-long", culture: "Haricot long", nameEn: "Long bean", prix: "1 500 KHR/kg", bg: "#E9F1DD", photo: "images/haricotlong.jpg" },
-  { key: "chou", culture: "Chou", nameEn: "Cabbage", prix: "1 350 KHR/kg", bg: "#E6F1E3", photo: "images/chou.jpg" },
-  { key: "laitue", culture: "Laitue", nameEn: "Lettuce", prix: "1 800 KHR/kg", bg: "#E4F0DA", photo: "images/laitue.jpg" },
-  { key: "morning-glory", culture: "Liseron d'eau", nameEn: "Water spinach", prix: "1 100 KHR/kg", bg: "#DFEED8", photo: "images/morning.jpg" },
-  { key: "gombo", culture: "Gombo", nameEn: "Okra", prix: "1 450 KHR/kg", bg: "#E3EFD9", photo: "images/gombo.jpg" },
-  { key: "piment", culture: "Piment", nameEn: "Chili pepper", prix: "6 000 KHR/kg", bg: "#FBE0DC", photo: "images/piment.jpg" },
-  { key: "citron", culture: "Citron vert", nameEn: "Lime", prix: "3 200 KHR/kg", bg: "#EEF2D6", photo: "images/citron.jpg" },
-  { key: "ananas", culture: "Ananas", nameEn: "Pineapple", prix: "1 600 KHR/kg", bg: "#FCEFC9", photo: "images/ananas.jpg" },
-  { key: "papaye", culture: "Papaye", nameEn: "Papaya", prix: "1 900 KHR/kg", bg: "#FBE7CF", photo: "images/papaye.jpg" },
-  { key: "coco", culture: "Noix de coco", nameEn: "Coconut", prix: "2 000 KHR/kg", bg: "#F1EAD9", photo: "images/coco.jpg" },
-  { key: "longane", culture: "Longane", nameEn: "Longan", prix: "5 500 KHR/kg", bg: "#F3E9D9", photo: "images/longane.jpg" },
-  { key: "durian", culture: "Durian", nameEn: "Durian", prix: "12 000 KHR/kg", bg: "#F6EAD0", photo: "images/durian.jpg" },
-  { key: "jacque", culture: "Jacque", nameEn: "Jackfruit", prix: "2 800 KHR/kg", bg: "#FBF0D2", photo: "images/jacque.jpg" },
-  { key: "rambutan", culture: "Rambutan", nameEn: "Rambutan", prix: "4 200 KHR/kg", bg: "#FBE2DE", photo: "images/rambutan.jpg" },
-  { key: "pomelo", culture: "Pomelo", nameEn: "Pomelo", prix: "3 000 KHR/kg", bg: "#F1F3DB", photo: "images/pomelo.jpg" },
-  { key: "tamarin", culture: "Tamarin", nameEn: "Tamarind", prix: "4 800 KHR/kg", bg: "#F1E4D2", photo: "images/tamarin.jpg" },
-  { key: "soja", culture: "Soja", nameEn: "Soybean", prix: "2 900 KHR/kg", bg: "#EFF2DE", photo: "images/soja.jpg" },
-  { key: "arachide", culture: "Arachide", nameEn: "Peanut", prix: "4 500 KHR/kg", bg: "#F5EAD6", photo: "images/arachide.jpg" },
-  { key: "sesame", culture: "Sésame", nameEn: "Sesame", prix: "10 500 KHR/kg", bg: "#F7F0DD", photo: "images/sesame.jpg" },
-  { key: "haricot-mungo", culture: "Haricot mungo", nameEn: "Mung bean", prix: "5 200 KHR/kg", bg: "#EBF2DD", photo: "images/haricotmungo.jpg" },
-  { key: "cardamome", culture: "Cardamome", nameEn: "Cardamom", prix: "32 000 KHR/kg", bg: "#EDE9DD", photo: "images/cardamome.jpg" },
-  { key: "gingembre", culture: "Gingembre", nameEn: "Ginger", prix: "3 600 KHR/kg", bg: "#F3E9D6", photo: "images/gingembre.jpg" },
-  { key: "curcuma", culture: "Curcuma", nameEn: "Turmeric", prix: "4 000 KHR/kg", bg: "#FBE9B9", photo: "images/curcuma.jpg" },
-  { key: "citronnelle", culture: "Citronnelle", nameEn: "Lemongrass", prix: "2 100 KHR/kg", bg: "#E6F0DA", photo: "images/citronnelle.jpg" },
-  { key: "basilic", culture: "Basilic thaï", nameEn: "Thai basil", prix: "2 400 KHR/kg", bg: "#E1EFD9", photo: "images/basilic.jpg" },
-  { key: "menthe", culture: "Menthe", nameEn: "Mint", prix: "2 600 KHR/kg", bg: "#E0F0DD", photo: "images/menthe.jpg" },
-  { key: "coriandre", culture: "Coriandre", nameEn: "Coriander", prix: "2 300 KHR/kg", bg: "#E3F1DC", photo: "images/coriandre.jpg" },
-  { key: "coton", culture: "Coton", nameEn: "Cotton", prix: "3 400 KHR/kg", bg: "#F2F0E8", photo: "images/coton.jpg" },
-  { key: "jute", culture: "Jute", nameEn: "Jute", prix: "1 950 KHR/kg", bg: "#ECEFD8", photo: "images/jute.jpg" },
+  { key: "riz", culture: "Riz", nameEn: "Rice", prix: "380 FCFA/kg", bg: "#F7ECDA", photo: "images/riz.jpg" },
+  { key: "mais", culture: "Maïs", nameEn: "Corn", prix: "200 FCFA/kg", bg: "#FBF3D9", photo: "images/mais.jpg" },
+  { key: "manioc", culture: "Manioc", nameEn: "Cassava", prix: "175 FCFA/kg", bg: "#F3E9DC", photo: "images/manioc.jpg" },
+  { key: "mangue", culture: "Mangue", nameEn: "Mango", prix: "300 FCFA/kg", bg: "#FCEBD6", photo: "images/mangue.jpg" },
+  { key: "banane", culture: "Banane", nameEn: "Banana", prix: "400 FCFA/kg", bg: "#FBF2CF", photo: "images/banane.jpg" },
+  { key: "cajou", culture: "Noix de cajou (anacarde)", nameEn: "Cashew nut", prix: "900 FCFA/kg", bg: "#F2E7D3", photo: "images/noixdecajou.jpg" },
+  { key: "pasteque", culture: "Pastèque", nameEn: "Watermelon", prix: "150 FCFA/kg", bg: "#EAF5E7", photo: "images/pasteque.jpg" },
+  { key: "concombre", culture: "Concombre", nameEn: "Cucumber", prix: "250 FCFA/kg", bg: "#EAF3E4", photo: "images/concombre.jpg" },
+  { key: "aubergine", culture: "Aubergine", nameEn: "Eggplant", prix: "300 FCFA/kg", bg: "#ECE3EE", photo: "images/aubergine.jpg" },
+  { key: "canne", culture: "Canne à sucre", nameEn: "Sugarcane", prix: "100 FCFA/kg", bg: "#F1F0DE", photo: "images/canne.jpg" },
+  { key: "haricot-vert", culture: "Haricots verts", nameEn: "Green beans", prix: "900 FCFA/kg", bg: "#EAF4E1", photo: "images/haricotvert.jpg" },
+  { key: "tomate", culture: "Tomate", nameEn: "Tomato", prix: "350 FCFA/kg", bg: "#FBE6DE", photo: "images/tomate.jpg" },
+  { key: "oignon", culture: "Oignon", nameEn: "Onion", prix: "360 FCFA/kg", bg: "#F5EBDD", photo: "images/oignon.jpg" },
+  { key: "ail", culture: "Ail (Podor)", nameEn: "Garlic", prix: "2800 FCFA/kg", bg: "#F6EFE0", photo: "images/ail.jpg" },
+  { key: "patate-douce", culture: "Patate douce", nameEn: "Sweet potato", prix: "250 FCFA/kg", bg: "#F5E2CE", photo: "images/patate.jpg" },
+  { key: "pomme-de-terre", culture: "Pomme de terre", nameEn: "Potato", prix: "350 FCFA/kg", bg: "#F0E6D4", photo: "images/pommedeterre.jpg" },
+  { key: "courge", culture: "Courge", nameEn: "Pumpkin / squash", prix: "200 FCFA/kg", bg: "#FBE9C7", photo: "images/courge.jpg" },
+  { key: "chou", culture: "Chou", nameEn: "Cabbage", prix: "250 FCFA/kg", bg: "#E6F1E3", photo: "images/chou.jpg" },
+  { key: "laitue", culture: "Laitue", nameEn: "Lettuce", prix: "500 FCFA/kg", bg: "#E4F0DA", photo: "images/laitue.jpg" },
+  { key: "gombo", culture: "Gombo", nameEn: "Okra", prix: "400 FCFA/kg", bg: "#E3EFD9", photo: "images/gombo.jpg" },
+  { key: "piment", culture: "Piment", nameEn: "Chili pepper", prix: "2000 FCFA/kg", bg: "#FBE0DC", photo: "images/piment.jpg" },
+  { key: "citron", culture: "Citron vert", nameEn: "Lime", prix: "600 FCFA/kg", bg: "#EEF2D6", photo: "images/citron.jpg" },
+  { key: "ananas", culture: "Ananas (Casamance)", nameEn: "Pineapple", prix: "400 FCFA/kg", bg: "#FCEFC9", photo: "images/ananas.jpg" },
+  { key: "papaye", culture: "Papaye", nameEn: "Papaya", prix: "300 FCFA/kg", bg: "#FBE7CF", photo: "images/papaye.jpg" },
+  { key: "coco", culture: "Noix de coco", nameEn: "Coconut", prix: "300 FCFA/kg", bg: "#F1EAD9", photo: "images/coco.jpg" },
+  { key: "tamarin", culture: "Tamarin", nameEn: "Tamarind", prix: "800 FCFA/kg", bg: "#F1E4D2", photo: "images/tamarin.jpg" },
+  { key: "soja", culture: "Soja", nameEn: "Soybean", prix: "250 FCFA/kg", bg: "#EFF2DE", photo: "images/soja.jpg" },
+  { key: "arachide", culture: "Arachide", nameEn: "Peanut", prix: "280 FCFA/kg", bg: "#F5EAD6", photo: "images/arachide.jpg" },
+  { key: "sesame", culture: "Sésame", nameEn: "Sesame", prix: "700 FCFA/kg", bg: "#F7F0DD", photo: "images/sesame.jpg" },
+  { key: "gingembre", culture: "Gingembre", nameEn: "Ginger", prix: "1200 FCFA/kg", bg: "#F3E9D6", photo: "images/gingembre.jpg" },
+  { key: "curcuma", culture: "Curcuma", nameEn: "Turmeric", prix: "1500 FCFA/kg", bg: "#FBE9B9", photo: "images/curcuma.jpg" },
+  { key: "citronnelle", culture: "Citronnelle", nameEn: "Lemongrass", prix: "500 FCFA/kg", bg: "#E6F0DA", photo: "images/citronnelle.jpg" },
+  { key: "menthe", culture: "Menthe", nameEn: "Mint", prix: "1000 FCFA/kg", bg: "#E0F0DD", photo: "images/menthe.jpg" },
+  { key: "coriandre", culture: "Coriandre", nameEn: "Coriander", prix: "800 FCFA/kg", bg: "#E3F1DC", photo: "images/coriandre.jpg" },
+  { key: "coton", culture: "Coton", nameEn: "Cotton", prix: "280 FCFA/kg", bg: "#F2F0E8", photo: "images/coton.jpg" },
+  { key: "jute", culture: "Jute (lalo)", nameEn: "Jute mallow (lalo)", prix: "500 FCFA/kg", bg: "#ECEFD8", photo: "images/jute.jpg" },
+  { key: "mil", culture: "Mil", nameEn: "Millet", prix: "220 FCFA/kg", bg: "#F6EEDA", photo: "images/mil.jpg" },
+  { key: "sorgho", culture: "Sorgho", nameEn: "Sorghum", prix: "200 FCFA/kg", bg: "#F2ECD8", photo: "images/sorgho.jpg" },
+  { key: "niebe", culture: "Niébé", nameEn: "Cowpea (black-eyed pea)", prix: "600 FCFA/kg", bg: "#EAF2DD", photo: "images/niebe.jpg" },
+  { key: "bissap", culture: "Bissap (oseille de Guinée)", nameEn: "Hibiscus (bissap)", prix: "1400 FCFA/kg", bg: "#F8E3E6", photo: "images/bissap.jpg" },
+  { key: "fonio", culture: "Fonio", nameEn: "Fonio", prix: "1000 FCFA/kg", bg: "#F3ECD9", photo: "images/fonio.jpg" },
+  { key: "orange", culture: "Orange", nameEn: "Orange", prix: "350 FCFA/kg", bg: "#FBE7C9", photo: "images/orange.jpg" },
 ];
-
 // Traductions EN des libellés de statut / canal (données fixes, pas de texte libre)
 const AR_STATUT_EN = {
   "Nouveau match": "New match",
@@ -142,88 +139,90 @@ function arCanalLabel(canal, lang) {
 
 const AR_SEED = {
   prices: AR_PRODUCTS,
-  // 80 offres de démonstration réparties sur les 50 produits (au moins une
-  // par produit, cinq pour le riz) pour qu'aucune recherche ne tombe sur
-  // un résultat vide dans le simulateur d'appel, le SMS ou le catalogue.
+  // Offres de démonstration réparties sur les cultures ci-dessus (au moins
+  // une par culture, plusieurs pour le riz, l'oignon et l'arachide, les
+  // plus centrales au projet), pour qu'aucune recherche ne tombe sur un
+  // résultat vide dans le simulateur d'appel, le SMS ou le catalogue.
+  // Régions et numéros de téléphone au format sénégalais.
   offers: [
-  { id: "o1", fermier: "Vanna Kim", culture: "Riz jasmin", key: "riz", quantite: "100 kg", prix: "1 220 KHR/kg", province: "Battambang", canal: "sms", statut: "Nouveau match", date: "2026-09-16", tel: "078 670 739", photo: "images/o1.jpg" },
-  { id: "o2", fermier: "Chariya Nuon", culture: "Riz jasmin", key: "riz", quantite: "25 kg", prix: "1 290 KHR/kg", province: "Svay Rieng", canal: "site", statut: "Transaction convenue", date: "2026-09-16", tel: "085 955 958", photo: "images/o2.jpg" },
-  { id: "o3", fermier: "Sambath Im", culture: "Oignon", key: "oignon", quantite: "700 kg", prix: "2 320 KHR/kg", province: "Oddar Meanchey", canal: "site", statut: "Nouveau match", date: "2026-09-16", tel: "081 808 703", photo: null },
-  { id: "o4", fermier: "Sok Leang", culture: "Pomme de terre", key: "pomme-de-terre", quantite: "50 kg", prix: "2 110 KHR/kg", province: "Kampot", canal: "sms", statut: "Contacté", date: "2026-09-16", tel: "088 383 769", photo: null },
-  { id: "o5", fermier: "Maly Ouk", culture: "Haricot long", key: "haricot-long", quantite: "25 kg", prix: "1 510 KHR/kg", province: "Kandal", canal: "vocal", statut: "Contacté", date: "2026-09-16", tel: "078 581 066", photo: null },
-  { id: "o6", fermier: "Dara Heng", culture: "Laitue", key: "laitue", quantite: "500 kg", prix: "1 880 KHR/kg", province: "Pursat", canal: "site", statut: "Contacté", date: "2026-09-16", tel: "098 396 900", photo: null },
-  { id: "o7", fermier: "Malis Roeun", culture: "Curcuma", key: "curcuma", quantite: "300 kg", prix: "4 270 KHR/kg", province: "Kandal", canal: "vocal", statut: "Transaction convenue", date: "2026-09-16", tel: "099 134 233", photo: null },
-  { id: "o8", fermier: "Bopha Meas", culture: "Poivre noir", key: "poivre-noir", quantite: "20 kg", prix: "18 240 KHR/kg", province: "Siem Reap", canal: "site", statut: "Nouveau match", date: "2026-09-15", tel: "015 834 045", photo: "images/o8.jpg" },
-  { id: "o9", fermier: "Chenda Rith", culture: "Poivre rouge", key: "poivre-rouge", quantite: "15 kg", prix: "23 360 KHR/kg", province: "Pursat", canal: "sms", statut: "Transaction convenue", date: "2026-09-15", tel: "092 265 058", photo: null },
-  { id: "o10", fermier: "Sok Leang", culture: "Banane", key: "banane", quantite: "400 kg", prix: "1 630 KHR/kg", province: "Siem Reap", canal: "site", statut: "Transaction convenue", date: "2026-09-15", tel: "088 383 769", photo: "images/o10.jpg" },
-  { id: "o11", fermier: "Kosal Prum", culture: "Haricots verts", key: "haricot-vert", quantite: "30 kg", prix: "1 580 KHR/kg", province: "Pursat", canal: "vocal", statut: "Nouveau match", date: "2026-09-15", tel: "017 000 410", photo: null },
-  { id: "o12", fermier: "Veasna Chey", culture: "Tomate", key: "tomate", quantite: "20 kg", prix: "1 890 KHR/kg", province: "Kandal", canal: "sms", statut: "Nouveau match", date: "2026-09-15", tel: "086 040 491", photo: null },
-  { id: "o13", fermier: "Pisey Sok", culture: "Piment", key: "piment", quantite: "20 kg", prix: "6 070 KHR/kg", province: "Svay Rieng", canal: "site", statut: "Nouveau match", date: "2026-09-15", tel: "093 615 145", photo: null },
-  { id: "o14", fermier: "Dara Heng", culture: "Ananas", key: "ananas", quantite: "30 kg", prix: "1 650 KHR/kg", province: "Kratie", canal: "sms", statut: "Contacté", date: "2026-09-15", tel: "098 396 900", photo: null },
-  { id: "o15", fermier: "Lina Sok", culture: "Rambutan", key: "rambutan", quantite: "15 kg", prix: "4 300 KHR/kg", province: "Kampong Thom", canal: "sms", statut: "Transaction convenue", date: "2026-09-15", tel: "081 816 201", photo: null },
-  { id: "o16", fermier: "Sovann Ly", culture: "Pomelo", key: "pomelo", quantite: "500 kg", prix: "3 130 KHR/kg", province: "Prey Veng", canal: "site", statut: "Nouveau match", date: "2026-09-15", tel: "012 963 267", photo: null },
-  { id: "o17", fermier: "Veasna Chey", culture: "Tamarin", key: "tamarin", quantite: "250 kg", prix: "4 480 KHR/kg", province: "Kratie", canal: "site", statut: "Contacté", date: "2026-09-15", tel: "086 040 491", photo: null },
-  { id: "o18", fermier: "Narith Vong", culture: "Gingembre", key: "gingembre", quantite: "15 kg", prix: "3 310 KHR/kg", province: "Kratie", canal: "sms", statut: "Nouveau match", date: "2026-09-15", tel: "016 107 535", photo: null },
-  { id: "o20", fermier: "Narith Vong", culture: "Maïs", key: "mais", quantite: "80 kg", prix: "740 KHR/kg", province: "Svay Rieng", canal: "site", statut: "Contacté", date: "2026-09-14", tel: "016 107 535", photo: "images/o20.jpg" },
-  { id: "o21", fermier: "Lina Sok", culture: "Manioc", key: "manioc", quantite: "100 kg", prix: "620 KHR/kg", province: "Pursat", canal: "sms", statut: "Transaction convenue", date: "2026-09-14", tel: "081 816 201", photo: null },
-  { id: "o22", fermier: "Dara Heng", culture: "Mangue", key: "mangue", quantite: "500 kg", prix: "2 690 KHR/kg", province: "Pursat", canal: "vocal", statut: "Contacté", date: "2026-09-14", tel: "098 396 900", photo: null },
-  { id: "o23", fermier: "Sreymom Chhun", culture: "Mangue", key: "mangue", quantite: "60 kg", prix: "2 630 KHR/kg", province: "Battambang", canal: "site", statut: "Nouveau match", date: "2026-09-14", tel: "016 969 077", photo: "images/o23.jpg" },
-  { id: "o24", fermier: "Malis Roeun", culture: "Noix de cajou", key: "cajou", quantite: "700 kg", prix: "9 580 KHR/kg", province: "Kampong Thom", canal: "site", statut: "Nouveau match", date: "2026-09-14", tel: "099 134 233", photo: "images/o24.jpg" },
-  { id: "o25", fermier: "Sovann Ly", culture: "Patate douce", key: "patate-douce", quantite: "400 kg", prix: "1 340 KHR/kg", province: "Kratie", canal: "site", statut: "Transaction convenue", date: "2026-09-14", tel: "012 963 267", photo: null },
-  { id: "o26", fermier: "Lina Sok", culture: "Sésame", key: "sesame", quantite: "400 kg", prix: "9 850 KHR/kg", province: "Prey Veng", canal: "sms", statut: "Nouveau match", date: "2026-09-14", tel: "081 816 201", photo: null },
-  { id: "o27", fermier: "Maly Ouk", culture: "Manioc", key: "manioc", quantite: "150 kg", prix: "690 KHR/kg", province: "Battambang", canal: "vocal", statut: "Transaction convenue", date: "2026-09-13", tel: "078 581 066", photo: null },
-  { id: "o28", fermier: "Channary Yos", culture: "Banane", key: "banane", quantite: "120 kg", prix: "2 010 KHR/kg", province: "Pursat", canal: "vocal", statut: "Transaction convenue", date: "2026-09-13", tel: "070 251 089", photo: null },
-  { id: "o29", fermier: "Maly Ouk", culture: "Pastèque", key: "pasteque", quantite: "700 kg", prix: "1 030 KHR/kg", province: "Kampong Thom", canal: "site", statut: "Nouveau match", date: "2026-09-13", tel: "078 581 066", photo: null },
-  { id: "o30", fermier: "Sok Leang", culture: "Tomate", key: "tomate", quantite: "60 kg", prix: "1 550 KHR/kg", province: "Kandal", canal: "site", statut: "Transaction convenue", date: "2026-09-13", tel: "088 383 769", photo: null },
-  { id: "o31", fermier: "Kosal Prum", culture: "Courge", key: "courge", quantite: "150 kg", prix: "1 270 KHR/kg", province: "Kampong Thom", canal: "vocal", statut: "Nouveau match", date: "2026-09-13", tel: "017 000 410", photo: null },
-  { id: "o32", fermier: "Dara Heng", culture: "Durian", key: "durian", quantite: "400 kg", prix: "10 690 KHR/kg", province: "Kampong Speu", canal: "site", statut: "Nouveau match", date: "2026-09-13", tel: "098 396 900", photo: null },
-  { id: "o33", fermier: "Pisey Sok", culture: "Durian", key: "durian", quantite: "80 kg", prix: "13 220 KHR/kg", province: "Oddar Meanchey", canal: "site", statut: "Nouveau match", date: "2026-09-13", tel: "093 615 145", photo: null },
-  { id: "o34", fermier: "Rithy Pen", culture: "Soja", key: "soja", quantite: "40 kg", prix: "2 780 KHR/kg", province: "Svay Rieng", canal: "sms", statut: "Nouveau match", date: "2026-09-13", tel: "092 614 718", photo: null },
-  { id: "o35", fermier: "Veasna Chey", culture: "Haricot mungo", key: "haricot-mungo", quantite: "25 kg", prix: "5 450 KHR/kg", province: "Battambang", canal: "vocal", statut: "Contacté", date: "2026-09-13", tel: "086 040 491", photo: null },
-  { id: "o36", fermier: "Chenda Rith", culture: "Cardamome", key: "cardamome", quantite: "1000 kg", prix: "35 820 KHR/kg", province: "Oddar Meanchey", canal: "site", statut: "Nouveau match", date: "2026-09-13", tel: "092 265 058", photo: null },
-  { id: "o37", fermier: "Malis Roeun", culture: "Menthe", key: "menthe", quantite: "400 kg", prix: "2 830 KHR/kg", province: "Siem Reap", canal: "site", statut: "Nouveau match", date: "2026-09-13", tel: "099 134 233", photo: null },
-  { id: "o38", fermier: "Sina Khan", culture: "Riz jasmin", key: "riz", quantite: "700 kg", prix: "1 230 KHR/kg", province: "Pursat", canal: "sms", statut: "Transaction convenue", date: "2026-09-12", tel: "098 572 560", photo: null },
-  { id: "o39", fermier: "Maly Ouk", culture: "Riz jasmin", key: "riz", quantite: "60 kg", prix: "1 220 KHR/kg", province: "Pursat", canal: "site", statut: "Nouveau match", date: "2026-09-12", tel: "078 581 066", photo: "images/o3.jpg" },
-  { id: "o40", fermier: "Sreynich Pheng", culture: "Ail", key: "ail", quantite: "300 kg", prix: "7 390 KHR/kg", province: "Kampot", canal: "vocal", statut: "Nouveau match", date: "2026-09-12", tel: "016 998 606", photo: null },
-  { id: "o41", fermier: "Maly Ouk", culture: "Chou", key: "chou", quantite: "180 kg", prix: "1 510 KHR/kg", province: "Kampong Cham", canal: "site", statut: "Transaction convenue", date: "2026-09-12", tel: "078 581 066", photo: null },
-  { id: "o42", fermier: "Veasna Chey", culture: "Liseron d'eau", key: "morning-glory", quantite: "40 kg", prix: "1 000 KHR/kg", province: "Oddar Meanchey", canal: "sms", statut: "Nouveau match", date: "2026-09-12", tel: "086 040 491", photo: null },
-  { id: "o43", fermier: "Lina Sok", culture: "Citron vert", key: "citron", quantite: "40 kg", prix: "3 100 KHR/kg", province: "Kandal", canal: "site", statut: "Nouveau match", date: "2026-09-12", tel: "081 816 201", photo: null },
-  { id: "o44", fermier: "Chan Dara", culture: "Longane", key: "longane", quantite: "80 kg", prix: "6 220 KHR/kg", province: "Kampong Cham", canal: "site", statut: "Nouveau match", date: "2026-09-12", tel: "070 480 333", photo: null },
-  { id: "o45", fermier: "Sovann Ly", culture: "Soja", key: "soja", quantite: "1000 kg", prix: "3 260 KHR/kg", province: "Svay Rieng", canal: "site", statut: "Nouveau match", date: "2026-09-12", tel: "012 963 267", photo: null },
-  { id: "o46", fermier: "Chariya Nuon", culture: "Basilic thaï", key: "basilic", quantite: "300 kg", prix: "2 670 KHR/kg", province: "Kampong Thom", canal: "sms", statut: "Nouveau match", date: "2026-09-12", tel: "085 955 958", photo: null },
-  { id: "o47", fermier: "Kanha Tep", culture: "Maïs", key: "mais", quantite: "80 kg", prix: "850 KHR/kg", province: "Kandal", canal: "vocal", statut: "Nouveau match", date: "2026-09-11", tel: "096 640 606", photo: null },
-  { id: "o48", fermier: "Vibol Chan", culture: "Aubergine", key: "aubergine", quantite: "20 kg", prix: "1 320 KHR/kg", province: "Kampot", canal: "vocal", statut: "Nouveau match", date: "2026-09-11", tel: "098 828 278", photo: null },
-  { id: "o49", fermier: "Pisey Sok", culture: "Patate douce", key: "patate-douce", quantite: "20 kg", prix: "1 400 KHR/kg", province: "Takeo", canal: "vocal", statut: "Nouveau match", date: "2026-09-11", tel: "093 615 145", photo: null },
-  { id: "o50", fermier: "Vanna Kim", culture: "Gombo", key: "gombo", quantite: "60 kg", prix: "1 390 KHR/kg", province: "Battambang", canal: "site", statut: "Nouveau match", date: "2026-09-11", tel: "078 670 739", photo: null },
-  { id: "o51", fermier: "Sophea Long", culture: "Papaye", key: "papaye", quantite: "20 kg", prix: "2 130 KHR/kg", province: "Kandal", canal: "vocal", statut: "Nouveau match", date: "2026-09-11", tel: "070 016 972", photo: null },
-  { id: "o52", fermier: "Chan Dara", culture: "Jacque", key: "jacque", quantite: "100 kg", prix: "3 120 KHR/kg", province: "Svay Rieng", canal: "vocal", statut: "Nouveau match", date: "2026-09-11", tel: "070 480 333", photo: null },
-  { id: "o53", fermier: "Veasna Chey", culture: "Riz jasmin", key: "riz", quantite: "30 kg", prix: "1 390 KHR/kg", province: "Siem Reap", canal: "site", statut: "Nouveau match", date: "2026-09-10", tel: "086 040 491", photo: "images/o53.jpg" },
-  { id: "o54", fermier: "Chariya Nuon", culture: "Maïs", key: "mais", quantite: "150 kg", prix: "710 KHR/kg", province: "Kampong Speu", canal: "site", statut: "Nouveau match", date: "2026-09-10", tel: "085 955 958", photo: "images/o54.jpg" },
-  { id: "o55", fermier: "Vibol Chan", culture: "Poivre noir", key: "poivre-noir", quantite: "1000 kg", prix: "18 680 KHR/kg", province: "Kratie", canal: "sms", statut: "Nouveau match", date: "2026-09-10", tel: "098 828 278", photo: null },
-  { id: "o56", fermier: "Sophea Long", culture: "Poivre noir", key: "poivre-noir", quantite: "200 kg", prix: "18 740 KHR/kg", province: "Svay Rieng", canal: "vocal", statut: "Nouveau match", date: "2026-09-10", tel: "070 016 972", photo: null },
-  { id: "o57", fermier: "Veasna Chey", culture: "Mangue", key: "mangue", quantite: "120 kg", prix: "2 430 KHR/kg", province: "Kampong Thom", canal: "site", statut: "Nouveau match", date: "2026-09-10", tel: "086 040 491", photo: "images/o57.jpg" },
-  { id: "o58", fermier: "Ratana Chea", culture: "Oignon", key: "oignon", quantite: "60 kg", prix: "2 220 KHR/kg", province: "Kampong Speu", canal: "site", statut: "Nouveau match", date: "2026-09-10", tel: "077 797 652", photo: null },
-  { id: "o59", fermier: "Sreymom Chhun", culture: "Pomme de terre", key: "pomme-de-terre", quantite: "80 kg", prix: "1 710 KHR/kg", province: "Battambang", canal: "site", statut: "Nouveau match", date: "2026-09-10", tel: "016 969 077", photo: null },
-  { id: "o60", fermier: "Sina Khan", culture: "Noix de coco", key: "coco", quantite: "50 kg", prix: "1 850 KHR/kg", province: "Kampong Cham", canal: "site", statut: "Nouveau match", date: "2026-09-10", tel: "098 572 560", photo: "images/o60.jpg" },
-  { id: "o61", fermier: "Vandy Hor", culture: "Basilic thaï", key: "basilic", quantite: "500 kg", prix: "2 400 KHR/kg", province: "Banteay Meanchey", canal: "vocal", statut: "Nouveau match", date: "2026-09-10", tel: "071 489 386", photo: null },
-  { id: "o62", fermier: "Sovann Ly", culture: "Coton", key: "coton", quantite: "250 kg", prix: "3 050 KHR/kg", province: "Kandal", canal: "vocal", statut: "Nouveau match", date: "2026-09-10", tel: "012 963 267", photo: null },
-  { id: "o63", fermier: "Sreynich Pheng", culture: "Jute", key: "jute", quantite: "1000 kg", prix: "2 170 KHR/kg", province: "Kampong Speu", canal: "sms", statut: "Nouveau match", date: "2026-09-10", tel: "016 998 606", photo: null },
-  { id: "o64", fermier: "Narith Vong", culture: "Pastèque", key: "pasteque", quantite: "500 kg", prix: "1 080 KHR/kg", province: "Takeo", canal: "sms", statut: "Nouveau match", date: "2026-09-09", tel: "016 107 535", photo: null },
-  { id: "o65", fermier: "Vandy Hor", culture: "Tomate", key: "tomate", quantite: "25 kg", prix: "1 710 KHR/kg", province: "Pursat", canal: "vocal", statut: "Nouveau match", date: "2026-09-09", tel: "071 489 386", photo: null },
-  { id: "o66", fermier: "Veasna Chey", culture: "Cardamome", key: "cardamome", quantite: "80 kg", prix: "28 370 KHR/kg", province: "Takeo", canal: "vocal", statut: "Nouveau match", date: "2026-09-09", tel: "086 040 491", photo: null },
-  { id: "o67", fermier: "Kanha Tep", culture: "Chou", key: "chou", quantite: "60 kg", prix: "1 210 KHR/kg", province: "Banteay Meanchey", canal: "site", statut: "Nouveau match", date: "2026-09-08", tel: "096 640 606", photo: null },
-  { id: "o68", fermier: "Sreynich Pheng", culture: "Papaye", key: "papaye", quantite: "1000 kg", prix: "2 100 KHR/kg", province: "Kratie", canal: "site", statut: "Nouveau match", date: "2026-09-08", tel: "016 998 606", photo: null },
-  { id: "o69", fermier: "Thida Nov", culture: "Pomelo", key: "pomelo", quantite: "500 kg", prix: "2 990 KHR/kg", province: "Banteay Meanchey", canal: "vocal", statut: "Nouveau match", date: "2026-09-08", tel: "088 865 206", photo: null },
-  { id: "o70", fermier: "Veasna Chey", culture: "Tamarin", key: "tamarin", quantite: "120 kg", prix: "4 390 KHR/kg", province: "Prey Veng", canal: "site", statut: "Nouveau match", date: "2026-09-08", tel: "086 040 491", photo: null },
-  { id: "o71", fermier: "Vandy Hor", culture: "Citronnelle", key: "citronnelle", quantite: "300 kg", prix: "1 920 KHR/kg", province: "Siem Reap", canal: "site", statut: "Nouveau match", date: "2026-09-08", tel: "071 489 386", photo: null },
-  { id: "o72", fermier: "Maly Ouk", culture: "Coriandre", key: "coriandre", quantite: "150 kg", prix: "2 190 KHR/kg", province: "Pursat", canal: "vocal", statut: "Nouveau match", date: "2026-09-08", tel: "078 581 066", photo: null },
-  { id: "o74", fermier: "Bopha Meas", culture: "Banane", key: "banane", quantite: "15 kg", prix: "2 030 KHR/kg", province: "Kampong Speu", canal: "vocal", statut: "Nouveau match", date: "2026-09-07", tel: "015 834 045", photo: null },
-  { id: "o75", fermier: "Vanna Kim", culture: "Concombre", key: "concombre", quantite: "80 kg", prix: "930 KHR/kg", province: "Siem Reap", canal: "vocal", statut: "Nouveau match", date: "2026-09-07", tel: "078 670 739", photo: null },
-  { id: "o76", fermier: "Ratana Chea", culture: "Canne à sucre", key: "canne", quantite: "40 kg", prix: "470 KHR/kg", province: "Kampong Thom", canal: "vocal", statut: "Nouveau match", date: "2026-09-07", tel: "077 797 652", photo: null },
-  { id: "o77", fermier: "Vanna Kim", culture: "Courge", key: "courge", quantite: "250 kg", prix: "1 260 KHR/kg", province: "Banteay Meanchey", canal: "vocal", statut: "Nouveau match", date: "2026-09-07", tel: "078 670 739", photo: null },
-  { id: "o78", fermier: "Pisey Sok", culture: "Noix de coco", key: "coco", quantite: "250 kg", prix: "2 180 KHR/kg", province: "Svay Rieng", canal: "vocal", statut: "Nouveau match", date: "2026-09-07", tel: "093 615 145", photo: null },
-  { id: "o79", fermier: "Sreynich Pheng", culture: "Rambutan", key: "rambutan", quantite: "30 kg", prix: "4 000 KHR/kg", province: "Takeo", canal: "vocal", statut: "Nouveau match", date: "2026-09-07", tel: "016 998 606", photo: null },
-  { id: "o80", fermier: "Thida Nov", culture: "Arachide", key: "arachide", quantite: "1000 kg", prix: "4 220 KHR/kg", province: "Kampong Thom", canal: "site", statut: "Nouveau match", date: "2026-09-07", tel: "088 865 206", photo: null }
+  { id: "o1", fermier: "Bineta Sy", culture: "Riz", key: "riz", quantite: "15 kg", prix: "375 FCFA/kg", province: "Thiès", canal: "site", statut: "Nouveau match", date: "2026-09-24", tel: "75 189 85 64", photo: "images/o1.jpg" },
+  { id: "o2", fermier: "Astou Sy", culture: "Riz", key: "riz", quantite: "15 kg", prix: "373 FCFA/kg", province: "Matam", canal: "site", statut: "Nouveau match", date: "2026-09-24", tel: "75 303 93 99", photo: "images/o2.jpg" },
+  { id: "o3", fermier: "Malick Seck", culture: "Banane", key: "banane", quantite: "80 kg", prix: "405 FCFA/kg", province: "Saint-Louis", canal: "vocal", statut: "Contacté", date: "2026-09-17", tel: "76 448 45 29", photo: "images/o10.jpg" },
+  { id: "o4", fermier: "Aminata Sow", culture: "Maïs", key: "mais", quantite: "150 kg", prix: "198 FCFA/kg", province: "Louga", canal: "sms", statut: "Nouveau match", date: "2026-09-22", tel: "75 370 15 68", photo: "images/o20.jpg" },
+  { id: "o5", fermier: "Tidiane Faye", culture: "Mangue", key: "mangue", quantite: "200 kg", prix: "295 FCFA/kg", province: "Richard-Toll", canal: "sms", statut: "Nouveau match", date: "2026-09-19", tel: "78 821 18 15", photo: "images/o23.jpg" },
+  { id: "o6", fermier: "Alioune Niang", culture: "Noix de cajou (anacarde)", key: "cajou", quantite: "120 kg", prix: "899 FCFA/kg", province: "Louga", canal: "sms", statut: "Nouveau match", date: "2026-09-22", tel: "76 750 56 30", photo: "images/o24.jpg" },
+  { id: "o7", fermier: "Coumba Senghor", culture: "Riz", key: "riz", quantite: "180 kg", prix: "383 FCFA/kg", province: "Dagana", canal: "site", statut: "Nouveau match", date: "2026-09-18", tel: "78 646 41 30", photo: "images/o53.jpg" },
+  { id: "o8", fermier: "Tidiane Sy", culture: "Maïs", key: "mais", quantite: "200 kg", prix: "206 FCFA/kg", province: "Tambacounda", canal: "vocal", statut: "Nouveau match", date: "2026-09-23", tel: "77 924 50 61", photo: "images/o54.jpg" },
+  { id: "o9", fermier: "Fatoumata Wade", culture: "Mangue", key: "mangue", quantite: "25 kg", prix: "300 FCFA/kg", province: "Tambacounda", canal: "vocal", statut: "Nouveau match", date: "2026-09-18", tel: "76 505 92 68", photo: "images/o57.jpg" },
+  { id: "o10", fermier: "Bineta Camara", culture: "Noix de coco", key: "coco", quantite: "100 kg", prix: "296 FCFA/kg", province: "Bakel", canal: "site", statut: "Nouveau match", date: "2026-09-22", tel: "75 538 84 61", photo: "images/o60.jpg" },
+  { id: "o11", fermier: "Absa Cisse", culture: "Riz", key: "riz", quantite: "80 kg", prix: "383 FCFA/kg", province: "Dagana", canal: "vocal", statut: "Nouveau match", date: "2026-09-24", tel: "78 742 30 97", photo: "images/o3.jpg" },
+  { id: "o12", fermier: "Yacine Diedhiou", culture: "Riz", key: "riz", quantite: "25 kg", prix: "385 FCFA/kg", province: "Ziguinchor", canal: "site", statut: "Contacté", date: "2026-09-22", tel: "75 981 11 97", photo: null },
+  { id: "o13", fermier: "Aissatou Gueye", culture: "Riz", key: "riz", quantite: "700 kg", prix: "375 FCFA/kg", province: "Diourbel", canal: "sms", statut: "Nouveau match", date: "2026-09-23", tel: "76 103 43 74", photo: null },
+  { id: "o14", fermier: "Rokhaya Lo", culture: "Oignon", key: "oignon", quantite: "500 kg", prix: "357 FCFA/kg", province: "Matam", canal: "site", statut: "Nouveau match", date: "2026-09-23", tel: "78 482 30 79", photo: null },
+  { id: "o15", fermier: "Babacar Cisse", culture: "Oignon", key: "oignon", quantite: "15 kg", prix: "368 FCFA/kg", province: "Saint-Louis", canal: "vocal", statut: "Transaction convenue", date: "2026-09-22", tel: "70 345 17 40", photo: null },
+  { id: "o16", fermier: "Moussa Toure", culture: "Oignon", key: "oignon", quantite: "25 kg", prix: "354 FCFA/kg", province: "Bakel", canal: "vocal", statut: "Contacté", date: "2026-09-23", tel: "76 662 31 43", photo: null },
+  { id: "o17", fermier: "Ndella Toure", culture: "Oignon", key: "oignon", quantite: "250 kg", prix: "368 FCFA/kg", province: "Kaolack", canal: "site", statut: "Nouveau match", date: "2026-09-22", tel: "76 787 93 57", photo: null },
+  { id: "o18", fermier: "Khady Sy", culture: "Arachide", key: "arachide", quantite: "500 kg", prix: "286 FCFA/kg", province: "Fatick", canal: "vocal", statut: "Contacté", date: "2026-09-22", tel: "77 702 80 39", photo: null },
+  { id: "o19", fermier: "Awa Sy", culture: "Arachide", key: "arachide", quantite: "15 kg", prix: "279 FCFA/kg", province: "Dagana", canal: "vocal", statut: "Nouveau match", date: "2026-09-22", tel: "77 626 40 45", photo: null },
+  { id: "o20", fermier: "Ousmane Camara", culture: "Arachide", key: "arachide", quantite: "60 kg", prix: "287 FCFA/kg", province: "Mbour", canal: "site", statut: "Transaction convenue", date: "2026-09-21", tel: "78 903 70 62", photo: null },
+  { id: "o21", fermier: "Mballo Ba", culture: "Manioc", key: "manioc", quantite: "30 kg", prix: "173 FCFA/kg", province: "Sédhiou", canal: "sms", statut: "Nouveau match", date: "2026-09-21", tel: "77 789 93 92", photo: null },
+  { id: "o22", fermier: "Aissatou Sonko", culture: "Pastèque", key: "pasteque", quantite: "20 kg", prix: "145 FCFA/kg", province: "Louga", canal: "vocal", statut: "Contacté", date: "2026-09-23", tel: "78 649 67 27", photo: null },
+  { id: "o23", fermier: "Souleymane Sy", culture: "Concombre", key: "concombre", quantite: "50 kg", prix: "255 FCFA/kg", province: "Dagana", canal: "sms", statut: "Nouveau match", date: "2026-09-20", tel: "77 151 93 79", photo: null },
+  { id: "o24", fermier: "Abdoulaye Balde", culture: "Aubergine", key: "aubergine", quantite: "25 kg", prix: "292 FCFA/kg", province: "Vélingara", canal: "sms", statut: "Nouveau match", date: "2026-09-23", tel: "76 160 31 58", photo: null },
+  { id: "o25", fermier: "Souleymane Faye", culture: "Canne à sucre", key: "canne", quantite: "200 kg", prix: "92 FCFA/kg", province: "Sédhiou", canal: "site", statut: "Nouveau match", date: "2026-09-17", tel: "75 777 72 29", photo: null },
+  { id: "o26", fermier: "Awa Sagna", culture: "Haricots verts", key: "haricot-vert", quantite: "120 kg", prix: "898 FCFA/kg", province: "Bakel", canal: "vocal", statut: "Nouveau match", date: "2026-09-17", tel: "70 158 16 84", photo: null },
+  { id: "o27", fermier: "Abdoulaye Diop", culture: "Tomate", key: "tomate", quantite: "500 kg", prix: "357 FCFA/kg", province: "Matam", canal: "vocal", statut: "Transaction convenue", date: "2026-09-23", tel: "77 709 18 96", photo: null },
+  { id: "o28", fermier: "Fatoumata Sy", culture: "Ail (Podor)", key: "ail", quantite: "200 kg", prix: "2799 FCFA/kg", province: "Mbour", canal: "site", statut: "Nouveau match", date: "2026-09-24", tel: "75 183 63 94", photo: null },
+  { id: "o29", fermier: "Astou Ndour", culture: "Patate douce", key: "patate-douce", quantite: "150 kg", prix: "258 FCFA/kg", province: "Tambacounda", canal: "vocal", statut: "Nouveau match", date: "2026-09-22", tel: "76 234 95 92", photo: null },
+  { id: "o30", fermier: "Moussa Ndiaye", culture: "Pomme de terre", key: "pomme-de-terre", quantite: "300 kg", prix: "351 FCFA/kg", province: "Ziguinchor", canal: "site", statut: "Nouveau match", date: "2026-09-19", tel: "77 175 78 37", photo: null },
+  { id: "o31", fermier: "Idrissa Wade", culture: "Courge", key: "courge", quantite: "100 kg", prix: "208 FCFA/kg", province: "Dagana", canal: "vocal", statut: "Nouveau match", date: "2026-09-22", tel: "70 261 66 79", photo: null },
+  { id: "o32", fermier: "Tidiane Faye", culture: "Chou", key: "chou", quantite: "500 kg", prix: "251 FCFA/kg", province: "Louga", canal: "vocal", statut: "Nouveau match", date: "2026-09-22", tel: "77 209 80 29", photo: null },
+  { id: "o33", fermier: "Astou Senghor", culture: "Laitue", key: "laitue", quantite: "120 kg", prix: "500 FCFA/kg", province: "Tambacounda", canal: "vocal", statut: "Transaction convenue", date: "2026-09-18", tel: "70 617 72 42", photo: null },
+  { id: "o34", fermier: "Coumba Diop", culture: "Gombo", key: "gombo", quantite: "25 kg", prix: "393 FCFA/kg", province: "Saint-Louis", canal: "sms", statut: "Contacté", date: "2026-09-23", tel: "70 265 66 80", photo: null },
+  { id: "o35", fermier: "Khady Fall", culture: "Piment", key: "piment", quantite: "700 kg", prix: "2005 FCFA/kg", province: "Thiès", canal: "site", statut: "Nouveau match", date: "2026-09-24", tel: "70 696 80 28", photo: null },
+  { id: "o36", fermier: "Rokhaya Ba", culture: "Citron vert", key: "citron", quantite: "40 kg", prix: "605 FCFA/kg", province: "Podor", canal: "sms", statut: "Nouveau match", date: "2026-09-23", tel: "78 782 23 55", photo: null },
+  { id: "o37", fermier: "Abdoulaye Sonko", culture: "Ananas (Casamance)", key: "ananas", quantite: "40 kg", prix: "405 FCFA/kg", province: "Niayes", canal: "sms", statut: "Nouveau match", date: "2026-09-24", tel: "78 854 52 62", photo: null },
+  { id: "o38", fermier: "Modou Sow", culture: "Papaye", key: "papaye", quantite: "100 kg", prix: "299 FCFA/kg", province: "Podor", canal: "sms", statut: "Nouveau match", date: "2026-09-23", tel: "78 936 68 54", photo: null },
+  { id: "o39", fermier: "Fatou Ndour", culture: "Tamarin", key: "tamarin", quantite: "80 kg", prix: "801 FCFA/kg", province: "Kaolack", canal: "sms", statut: "Nouveau match", date: "2026-09-22", tel: "70 985 18 45", photo: null },
+  { id: "o40", fermier: "Ndella Diallo", culture: "Soja", key: "soja", quantite: "500 kg", prix: "253 FCFA/kg", province: "Saint-Louis", canal: "vocal", statut: "Contacté", date: "2026-09-22", tel: "78 694 43 14", photo: null },
+  { id: "o41", fermier: "Babacar Balde", culture: "Sésame", key: "sesame", quantite: "250 kg", prix: "695 FCFA/kg", province: "Richard-Toll", canal: "site", statut: "Nouveau match", date: "2026-09-24", tel: "76 690 34 42", photo: null },
+  { id: "o42", fermier: "Assane Thiam", culture: "Gingembre", key: "gingembre", quantite: "250 kg", prix: "1193 FCFA/kg", province: "Bakel", canal: "site", statut: "Nouveau match", date: "2026-09-17", tel: "78 472 65 18", photo: null },
+  { id: "o43", fermier: "Rokhaya Sane", culture: "Curcuma", key: "curcuma", quantite: "150 kg", prix: "1502 FCFA/kg", province: "Diourbel", canal: "site", statut: "Nouveau match", date: "2026-09-21", tel: "70 512 99 47", photo: null },
+  { id: "o44", fermier: "Yacine Ndour", culture: "Citronnelle", key: "citronnelle", quantite: "60 kg", prix: "496 FCFA/kg", province: "Niayes", canal: "site", statut: "Contacté", date: "2026-09-19", tel: "70 515 80 10", photo: null },
+  { id: "o45", fermier: "Mballo Sonko", culture: "Menthe", key: "menthe", quantite: "120 kg", prix: "1001 FCFA/kg", province: "Mbour", canal: "site", statut: "Nouveau match", date: "2026-09-18", tel: "70 576 66 66", photo: null },
+  { id: "o46", fermier: "Abdoulaye Ndour", culture: "Coriandre", key: "coriandre", quantite: "500 kg", prix: "798 FCFA/kg", province: "Dagana", canal: "sms", statut: "Contacté", date: "2026-09-20", tel: "75 443 21 40", photo: null },
+  { id: "o47", fermier: "Mariama Ndiaye", culture: "Coton", key: "coton", quantite: "80 kg", prix: "281 FCFA/kg", province: "Podor", canal: "vocal", statut: "Nouveau match", date: "2026-09-21", tel: "75 970 19 68", photo: null },
+  { id: "o48", fermier: "Yacine Cisse", culture: "Jute (lalo)", key: "jute", quantite: "1000 kg", prix: "505 FCFA/kg", province: "Kolda", canal: "vocal", statut: "Nouveau match", date: "2026-09-23", tel: "77 868 23 64", photo: null },
+  { id: "o49", fermier: "Souleymane Diop", culture: "Mil", key: "mil", quantite: "50 kg", prix: "219 FCFA/kg", province: "Bakel", canal: "vocal", statut: "Transaction convenue", date: "2026-09-24", tel: "76 236 69 95", photo: null },
+  { id: "o50", fermier: "Babacar Toure", culture: "Sorgho", key: "sorgho", quantite: "700 kg", prix: "208 FCFA/kg", province: "Ziguinchor", canal: "site", statut: "Transaction convenue", date: "2026-09-17", tel: "75 536 80 67", photo: null },
+  { id: "o51", fermier: "Mamadou Toure", culture: "Niébé", key: "niebe", quantite: "400 kg", prix: "597 FCFA/kg", province: "Fatick", canal: "site", statut: "Contacté", date: "2026-09-22", tel: "75 596 90 40", photo: null },
+  { id: "o52", fermier: "Pape Sy", culture: "Bissap (oseille de Guinée)", key: "bissap", quantite: "300 kg", prix: "1400 FCFA/kg", province: "Kaffrine", canal: "sms", statut: "Nouveau match", date: "2026-09-22", tel: "75 182 27 29", photo: null },
+  { id: "o53", fermier: "Astou Fall", culture: "Fonio", key: "fonio", quantite: "200 kg", prix: "999 FCFA/kg", province: "Sédhiou", canal: "sms", statut: "Nouveau match", date: "2026-09-22", tel: "75 577 63 17", photo: null },
+  { id: "o54", fermier: "Malick Senghor", culture: "Orange", key: "orange", quantite: "250 kg", prix: "348 FCFA/kg", province: "Saint-Louis", canal: "site", statut: "Contacté", date: "2026-09-21", tel: "76 106 55 48", photo: null },
+  { id: "o55", fermier: "Ramatoulaye Wade", culture: "Pastèque", key: "pasteque", quantite: "700 kg", prix: "155 FCFA/kg", province: "Fatick", canal: "sms", statut: "Transaction convenue", date: "2026-09-23", tel: "70 546 72 13", photo: null },
+  { id: "o56", fermier: "Souleymane Thiam", culture: "Pastèque", key: "pasteque", quantite: "200 kg", prix: "152 FCFA/kg", province: "Thiès", canal: "site", statut: "Nouveau match", date: "2026-09-20", tel: "77 503 85 82", photo: null },
+  { id: "o57", fermier: "Ousmane Niang", culture: "Fonio", key: "fonio", quantite: "25 kg", prix: "992 FCFA/kg", province: "Ziguinchor", canal: "vocal", statut: "Contacté", date: "2026-09-24", tel: "70 488 51 37", photo: null },
+  { id: "o58", fermier: "Coumba Toure", culture: "Haricots verts", key: "haricot-vert", quantite: "150 kg", prix: "902 FCFA/kg", province: "Sédhiou", canal: "sms", statut: "Contacté", date: "2026-09-24", tel: "76 119 79 16", photo: null },
+  { id: "o59", fermier: "Fatou Sy", culture: "Piment", key: "piment", quantite: "25 kg", prix: "1999 FCFA/kg", province: "Kaolack", canal: "vocal", statut: "Nouveau match", date: "2026-09-19", tel: "78 344 26 70", photo: null },
+  { id: "o60", fermier: "Souleymane Senghor", culture: "Fonio", key: "fonio", quantite: "1000 kg", prix: "995 FCFA/kg", province: "Kaffrine", canal: "sms", statut: "Nouveau match", date: "2026-09-23", tel: "75 721 24 30", photo: null },
+  { id: "o61", fermier: "Rokhaya Sagna", culture: "Sorgho", key: "sorgho", quantite: "1000 kg", prix: "195 FCFA/kg", province: "Kolda", canal: "sms", statut: "Nouveau match", date: "2026-09-17", tel: "78 177 85 98", photo: null },
+  { id: "o62", fermier: "Ramatoulaye Sonko", culture: "Bissap (oseille de Guinée)", key: "bissap", quantite: "30 kg", prix: "1399 FCFA/kg", province: "Louga", canal: "site", statut: "Nouveau match", date: "2026-09-24", tel: "70 645 64 94", photo: null },
+  { id: "o63", fermier: "Ibrahima Niang", culture: "Piment", key: "piment", quantite: "500 kg", prix: "1994 FCFA/kg", province: "Sédhiou", canal: "sms", statut: "Nouveau match", date: "2026-09-24", tel: "76 470 91 68", photo: null },
+  { id: "o64", fermier: "Coumba Diedhiou", culture: "Banane", key: "banane", quantite: "50 kg", prix: "405 FCFA/kg", province: "Bakel", canal: "sms", statut: "Transaction convenue", date: "2026-09-21", tel: "76 945 85 44", photo: null },
+  { id: "o65", fermier: "Adama Sy", culture: "Gombo", key: "gombo", quantite: "25 kg", prix: "399 FCFA/kg", province: "Ziguinchor", canal: "site", statut: "Nouveau match", date: "2026-09-19", tel: "76 444 13 73", photo: null },
+  { id: "o66", fermier: "Idrissa Sonko", culture: "Gombo", key: "gombo", quantite: "400 kg", prix: "397 FCFA/kg", province: "Kaffrine", canal: "sms", statut: "Nouveau match", date: "2026-09-22", tel: "75 818 45 81", photo: null },
+  { id: "o67", fermier: "Bineta Camara", culture: "Tomate", key: "tomate", quantite: "60 kg", prix: "358 FCFA/kg", province: "Sédhiou", canal: "sms", statut: "Nouveau match", date: "2026-09-20", tel: "78 807 70 92", photo: null },
+  { id: "o68", fermier: "Pape Sy", culture: "Pomme de terre", key: "pomme-de-terre", quantite: "15 kg", prix: "356 FCFA/kg", province: "Kolda", canal: "site", statut: "Nouveau match", date: "2026-09-23", tel: "70 779 84 57", photo: null },
+  { id: "o69", fermier: "Tidiane Diallo", culture: "Pomme de terre", key: "pomme-de-terre", quantite: "180 kg", prix: "358 FCFA/kg", province: "Kédougou", canal: "site", statut: "Contacté", date: "2026-09-21", tel: "70 413 42 39", photo: null },
+  { id: "o70", fermier: "Ndella Toure", culture: "Mangue", key: "mangue", quantite: "150 kg", prix: "298 FCFA/kg", province: "Niayes", canal: "vocal", statut: "Nouveau match", date: "2026-09-23", tel: "76 383 85 77", photo: null },
+  { id: "o71", fermier: "Pape Sy", culture: "Coton", key: "coton", quantite: "30 kg", prix: "281 FCFA/kg", province: "Kédougou", canal: "vocal", statut: "Nouveau match", date: "2026-09-22", tel: "77 825 78 26", photo: null },
+  { id: "o72", fermier: "Pape Senghor", culture: "Mil", key: "mil", quantite: "20 kg", prix: "213 FCFA/kg", province: "Thiès", canal: "site", statut: "Transaction convenue", date: "2026-09-21", tel: "77 993 11 83", photo: null },
+  { id: "o73", fermier: "Aissatou Sarr", culture: "Sorgho", key: "sorgho", quantite: "400 kg", prix: "207 FCFA/kg", province: "Podor", canal: "sms", statut: "Contacté", date: "2026-09-21", tel: "77 941 18 61", photo: null },
+  { id: "o74", fermier: "Mariama Diouf", culture: "Pomme de terre", key: "pomme-de-terre", quantite: "1000 kg", prix: "344 FCFA/kg", province: "Mbour", canal: "sms", statut: "Nouveau match", date: "2026-09-24", tel: "78 221 81 63", photo: null },
+  { id: "o75", fermier: "Adama Thiam", culture: "Coton", key: "coton", quantite: "500 kg", prix: "279 FCFA/kg", province: "Ziguinchor", canal: "sms", statut: "Contacté", date: "2026-09-19", tel: "76 412 82 89", photo: null },
+  { id: "o76", fermier: "Mamadou Ndour", culture: "Maïs", key: "mais", quantite: "60 kg", prix: "195 FCFA/kg", province: "Dagana", canal: "vocal", statut: "Nouveau match", date: "2026-09-23", tel: "78 665 19 30", photo: null },
+  { id: "o77", fermier: "Marieme Faye", culture: "Tomate", key: "tomate", quantite: "300 kg", prix: "355 FCFA/kg", province: "Podor", canal: "vocal", statut: "Transaction convenue", date: "2026-09-22", tel: "70 819 68 19", photo: null },
+  { id: "o78", fermier: "Seydou Balde", culture: "Fonio", key: "fonio", quantite: "100 kg", prix: "999 FCFA/kg", province: "Louga", canal: "site", statut: "Transaction convenue", date: "2026-09-23", tel: "78 372 28 19", photo: null }
   ],
   buyerRequests: [],
   smsLog: []
@@ -262,7 +261,7 @@ function arSave(db) {
 }
 
 // Préférences de l'utilisateur de démo (voir parametres.html) : nom,
-// téléphone, province, canal préféré, notifications. Centralisées ici
+// téléphone, région, canal préféré, notifications. Centralisées ici
 // (plutôt que dans js/parametres.js) pour que toute page qui publie une
 // offre au nom de "Vous (démo)" (mes-offres.js, sms.js, appel.js) puisse
 // récupérer le numéro de téléphone à associer à l'offre.
@@ -273,7 +272,7 @@ function paramLoadUser() {
     const raw = localStorage.getItem(AR_USER_KEY);
     if (raw) return JSON.parse(raw);
   } catch (e) { /* localStorage indisponible ou donnée corrompue : on repart des valeurs par défaut */ }
-  return { nom: "Sopheak", tel: "012 345 678", province: "Kampot", canal: "site", notifVocal: true, notifSms: true, notifSite: true };
+  return { nom: "Sokhna", tel: "77 123 45 67", province: "Thiès", canal: "site", notifVocal: true, notifSms: true, notifSite: true };
 }
 
 function paramSaveUser(prefs) {

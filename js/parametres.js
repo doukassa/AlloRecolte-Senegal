@@ -2,10 +2,13 @@
    utilisateur et données de démonstration.
    -------------------------------------------------------------
    Note : la langue choisie ici (français / anglais) ne concerne
-   que l'habillage du site/app — voir js/site-i18n.js. Le khmer et
-   les autres langues sont affichées à titre indicatif ("bientôt
-   disponible") pour montrer le potentiel multilingue du produit,
-   sans complexifier la démo maintenant (voir README.md). */
+   que l'habillage du site/app — voir js/site-i18n.js. Le wolof et
+   les autres langues nationales sont affichées à titre indicatif
+   ("bientôt disponible") pour montrer le potentiel multilingue du
+   produit : le wolof est déjà actif dans le simulateur d'appel
+   (voir js/appel-i18n.js), mais l'habillage complet du site lui-même
+   reste à faire, sans complexifier la démo maintenant (voir
+   README.md). */
 
 // AR_USER_KEY, paramLoadUser() et paramSaveUser() sont définis dans
 // js/db.js, pour que les pages de publication d'offre (mes-offres.js,
@@ -13,11 +16,11 @@
 // l'utilisateur de démo sans dépendre de ce fichier.
 
 const AR_MORE_LANGS = [
-  { code: "km", name: "ខ្មែរ · Khmer" },
-  { code: "th", name: "ไทย · Thai" },
-  { code: "vi", name: "Tiếng Việt · Vietnamese" },
-  { code: "zh", name: "中文 · Chinese" },
-  { code: "es", name: "Español · Spanish" }
+  { code: "wo", name: "Wolof" },
+  { code: "ff", name: "Pulaar · Fulfulde" },
+  { code: "srr", name: "Sérère" },
+  { code: "mnk", name: "Mandinka" },
+  { code: "dyo", name: "Joola · Diola" }
 ];
 
 // Rangée par langue plutôt que grille de pastilles : la langue active est
@@ -64,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const prefs = paramLoadUser();
   document.getElementById("user-nom").value = prefs.nom || "";
   document.getElementById("user-tel").value = prefs.tel || "";
-  document.getElementById("user-province").value = prefs.province || "Kampot";
+  document.getElementById("user-province").value = prefs.province || "Thiès";
   document.getElementById("user-canal").value = prefs.canal || "site";
   document.getElementById("notif-vocal").checked = prefs.notifVocal !== false;
   document.getElementById("notif-sms").checked = prefs.notifSms !== false;

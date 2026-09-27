@@ -3,8 +3,8 @@
    -----------------------------------------------------------
    Ne concerne que l'habillage du site/app (menus, titres, champs,
    boutons). La conversation du simulateur d'appel a son propre
-   sélecteur de langue (FR/EN/KM), indépendant de celui-ci — voir
-   js/appel-i18n.js. Le khmer pour l'interface du site n'est pas
+   sélecteur de langue (FR/EN/WO), indépendant de celui-ci — voir
+   js/appel-i18n.js. Le wolof pour l'interface du site n'est pas
    encore disponible : voir README.md, section Perspectives.
    ========================================================= */
 
@@ -130,8 +130,8 @@ const SITE_I18N = {
     "nav.mesOffres": "Mes offres",
     "nav.acheteur": "Suivi des commandes",
     "nav.parametres": "Paramètres",
-    "sidebar.hello": "Bonjour, Sopheak",
-    "sidebar.province": "Province de Kampot",
+    "sidebar.hello": "Bonjour, Sokhna",
+    "sidebar.province": "Région de Thiès",
     "lang.label": "Langue de l'interface",
     "role.label": "Mode de démonstration",
     "role.fermier": "Fermier",
@@ -154,8 +154,8 @@ const SITE_I18N = {
     "offre.subtitle": "Les acheteurs correspondant à votre offre seront notifiés automatiquement, quel que soit leur canal.",
     "field.culture": "Culture",
     "field.quantite": "Quantité disponible (kg)",
-    "field.prix": "Prix souhaité (KHR / kg)",
-    "field.province": "Province",
+    "field.prix": "Prix souhaité (FCFA / kg)",
+    "field.province": "Région",
     "field.photo": "Photo de la récolte (optionnel)",
     "upload.label": "Cliquez pour ajouter une photo depuis votre appareil",
     "upload.remove": "Retirer la photo",
@@ -178,7 +178,7 @@ const SITE_I18N = {
     "sms.empty": "Aucun SMS pour l'instant — passez un appel sur le simulateur, ou écrivez le premier message ci-dessous.",
     "sms.inputPlaceholder": "Écrivez votre SMS… ex. prix manioc",
     "sms.send": "Envoyer",
-    "sms.helper": "Exemples : « prix manioc », « vendre riz 200kg 1300 », ou une question sur votre culture — cette démo répond par mots-clés, pas par un vrai opérateur télécom.",
+    "sms.helper": "Exemples : « prix manioc », « vendre riz 200kg 380 », ou une question sur votre culture — cette démo répond par mots-clés, pas par un vrai opérateur télécom.",
 
     "suivi.title": "Suivi des commandes",
     "suivi.subtitle": "Les fermiers que vous avez contactés — depuis le catalogue, quel que soit leur canal (appel, SMS ou site/app) — et où en est chaque échange.",
@@ -201,7 +201,7 @@ const SITE_I18N = {
     "parametres.title": "Paramètres",
     "parametres.subtitle": "Langue de l'interface, informations du compte et préférences de démonstration.",
     "parametres.langTitle": "Langue de l'interface",
-    "parametres.langHelper": "Choisissez la langue d'affichage du site et de l'application. Le simulateur d'appel a son propre choix de langue (français, anglais, khmer), indépendant de celui-ci.",
+    "parametres.langHelper": "Choisissez la langue d'affichage du site et de l'application. Le simulateur d'appel a son propre choix de langue (français, anglais, wolof), indépendant de celui-ci.",
     "parametres.langSoon": "Bientôt disponible",
     "parametres.langActive": "Actif",
     "parametres.userTitle": "Informations utilisateur",
@@ -232,8 +232,8 @@ const SITE_I18N = {
     "nav.mesOffres": "My offers",
     "nav.acheteur": "Order tracking",
     "nav.parametres": "Settings",
-    "sidebar.hello": "Hello, Sopheak",
-    "sidebar.province": "Kampot Province",
+    "sidebar.hello": "Hello, Sokhna",
+    "sidebar.province": "Thiès Region",
     "lang.label": "Interface language",
     "role.label": "Demo view",
     "role.fermier": "Farmer",
@@ -256,8 +256,8 @@ const SITE_I18N = {
     "offre.subtitle": "Matching buyers will be notified automatically, whatever their channel.",
     "field.culture": "Crop",
     "field.quantite": "Available quantity (kg)",
-    "field.prix": "Desired price (KHR / kg)",
-    "field.province": "Province",
+    "field.prix": "Desired price (FCFA / kg)",
+    "field.province": "Region",
     "field.photo": "Harvest photo (optional)",
     "upload.label": "Click to add a photo from your device",
     "upload.remove": "Remove photo",
@@ -280,7 +280,7 @@ const SITE_I18N = {
     "sms.empty": "No SMS yet — make a call on the simulator, or write the first message below.",
     "sms.inputPlaceholder": "Write your SMS… e.g. rice price",
     "sms.send": "Send",
-    "sms.helper": "Examples: “price cassava”, “sell rice 200kg 1300”, or a question about your crop — this demo replies by keyword matching, not a real telecom operator.",
+    "sms.helper": "Examples: “price cassava”, “sell rice 200kg 380”, or a question about your crop — this demo replies by keyword matching, not a real telecom operator.",
 
     "suivi.title": "Order tracking",
     "suivi.subtitle": "The farmers you've contacted — from the catalog, whatever their channel (call, SMS or website/app) — and where each exchange stands.",
@@ -303,7 +303,7 @@ const SITE_I18N = {
     "parametres.title": "Settings",
     "parametres.subtitle": "Interface language, account information and demo preferences.",
     "parametres.langTitle": "Interface language",
-    "parametres.langHelper": "Choose the display language of the website and app. The call simulator has its own language choice (French, English, Khmer), independent of this one.",
+    "parametres.langHelper": "Choose the display language of the website and app. The call simulator has its own language choice (French, English, Wolof), independent of this one.",
     "parametres.langSoon": "Coming soon",
     "parametres.langActive": "Active",
     "parametres.userTitle": "User information",

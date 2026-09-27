@@ -74,21 +74,21 @@ function smsAutoReply(raw) {
 
   if (smsIsSellIntent(raw)) {
     if (!key) {
-      return "AlloRécolte — Pour publier une offre par SMS, écrivez : vendre [produit] [quantité]kg [prix]KHR. Ex. : vendre riz 200kg 1300.";
+      return "AlloRécolte — Pour publier une offre par SMS, écrivez : vendre [produit] [quantité]kg [prix]FCFA. Ex. : vendre riz 200kg 380.";
     }
     const nums = smsExtractNumbers(raw);
     const quantite = nums[0] || null;
     const prix = nums[1] || null;
     if (!quantite || !prix) {
-      return `AlloRécolte — Presque ! Précisez la quantité (kg) et le prix (KHR/kg). Ex. : vendre ${AR_NAMES.fr[key].toLowerCase()} 200kg 1300.`;
+      return `AlloRécolte — Presque ! Précisez la quantité (kg) et le prix (FCFA/kg). Ex. : vendre ${AR_NAMES.fr[key].toLowerCase()} 200kg 380.`;
     }
     const offer = arAddOffer({
       fermier: "Vous (démo)",
       culture: AR_NAMES.fr[key],
       key,
       quantite: `${quantite} kg`,
-      prix: `${prix.toLocaleString("fr-FR")} KHR/kg`,
-      province: "Kampot",
+      prix: `${prix.toLocaleString("fr-FR")} FCFA/kg`,
+      province: (typeof paramLoadUser === "function" && paramLoadUser().province) || "Thiès",
       canal: "sms",
       statut: "Nouveau match",
       photo: null
@@ -98,7 +98,7 @@ function smsAutoReply(raw) {
 
   if (key) {
     const p = arFindPriceByKey(key);
-    return `AlloRécolte — Le prix du jour pour le ${AR_NAMES.fr[key].toLowerCase()} est de ${p.prix} à Kampot. Pour vendre, écrivez : vendre ${AR_NAMES.fr[key].toLowerCase()} [quantité]kg [prix]KHR.`;
+    return `AlloRécolte — Le prix du jour pour le ${AR_NAMES.fr[key].toLowerCase()} est de ${p.prix} à Kaolack. Pour vendre, écrivez : vendre ${AR_NAMES.fr[key].toLowerCase()} [quantité]kg [prix]FCFA.`;
   }
 
   const faqAnswer = smsResolveFaqAnswer(raw);
@@ -106,7 +106,7 @@ function smsAutoReply(raw) {
     return `AlloRécolte — ${faqAnswer}`;
   }
 
-  return "AlloRécolte — Message non reconnu (démo par mots-clés). Essayez : « prix riz », « vendre manioc 100kg 620 » ou une question comme « pourquoi mes feuilles jaunissent ».";
+  return "AlloRécolte — Message non reconnu (démo par mots-clés). Essayez : « prix riz », « vendre manioc 100kg 175 » ou une question comme « pourquoi mes feuilles jaunissent ».";
 }
 
 document.addEventListener("DOMContentLoaded", () => {
