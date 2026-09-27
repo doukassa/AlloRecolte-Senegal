@@ -1,0 +1,17 @@
+{
+  "name": "AlloRécolte",
+  "short_name": "AlloRécolte",
+  "description": "Plateforme reliant fermiers et acheteurs, par appel vocal, SMS ou site web.",
+  "start_url": "index.html",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F4F8F1",
+  "theme_color": "#21A15A",
+  "lang": "fr",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
